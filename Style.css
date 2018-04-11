@@ -1,0 +1,378 @@
+
+/*
+Class:   ITSE-1374.WW1: Mobile Web  
+Project: Lab 3 HTML 5 APIs
+Author:  Bruno Leandro da Silva
+Date:    03/06/2018     
+*/
+
+
+ *{
+	margin: 0;
+	padding: 0;
+}
+
+body {
+    font: 20px Montserrat, sans-serif;
+    line-height: 1.8;
+    color: #f5f6f7;
+}
+
+p {font-size: 1.3em;}
+  .margin {margin-bottom: 45px;}
+  .bg-1 { 
+      background-color:  rgb(191, 10, 48 );
+      color: #ffffff;
+      border-bottom: solid 6px #ffffff
+    
+  }
+
+
+  .margin{
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+      font-size: 4.5em;
+  }
+  .bg-2 { 
+      background-color: rgb(0, 40, 104); 
+      color: #ffffff;
+  }
+  
+  .bg-4 { 
+      background-color: #f8f8f8; 
+      color: #fff;
+      width: 100%;
+  }
+  .container-fluid {
+      padding-top: 70px;
+      padding-bottom: 70px;
+  }
+ 
+  .img-responsive{
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  .navbar-left{
+
+    margin-top: -33px
+}
+  #myNavbar ul li a{
+    padding-top: 50px;
+    font-size: 1.5em;
+  }
+  
+  .navbar {
+      padding-top: 10px;
+      padding-bottom: 0px;
+      border: 0;
+      border-radius: 0;
+      margin-bottom: 0;
+      font-size: 20px;
+      letter-spacing: 5px;
+  }
+  .navbar-nav  li a:hover {
+      color: #9ea8a6 !important;
+  }
+
+
+.row:after,
+.hitbox:after {
+content: "";
+display: table;
+clear: both;
+}
+
+[class^="col-"] {
+float: left;
+}
+
+.col-half {
+width: 50%;
+}
+
+.gameInstructions img{
+    width: 200px;
+    height: 300px;
+}
+
+/*Test colums*/
+.row {
+    display: -ms-flexbox; /* IE10 */
+    display: flex;
+    -ms-flex-wrap: wrap; /* IE10 */
+    flex-wrap: wrap;
+    padding: 0 4px;
+}
+
+.column {
+    -ms-flex: 50%; /* IE10 */
+    flex: 50%;
+    max-width: 50%;
+    padding: 0 10px 0 10px;
+}
+
+.column img {
+    margin-top: 8px;
+    vertical-align: middle;
+    
+}
+
+
+/*Test Colums Ends*/
+
+
+
+.col-quarter {
+	width: 24%;
+	margin: 0.5%;
+	background-color: #aaaaaa;
+}
+
+.hitbox {
+	position: relative;
+}
+
+.hitbox:before {
+	display: block;
+    content: "";
+	padding-top: 100%;
+}
+
+.dropzone {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.answer {
+	width: 25%;
+	height: 25%;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	z-index: 1;
+}
+
+.answer.show {
+	visibility: visible;
+}
+
+.answer.hide {
+	visibility: hidden;
+}
+
+.dropzone:not(.container) .icon {
+    width: 100%;
+	height: 100%;
+    margin: 0;
+}
+
+.container {
+background-size: 100% 100%;
+}
+
+.icon {
+width: 24%;
+margin: 0.5%;
+}
+
+pre{
+    display: block;
+    width: 900px;
+}
+#dropzone-container img{
+    float: left;
+    
+    width: 150px;
+    height: 150px;
+
+}
+
+.container pre{
+    text-align: center;
+}
+
+#AbrahamLincoln {
+    background-image: url("img/Drop_Abraham_Lincoln_.png");
+    background-color: white;
+}
+
+#DonaldTrump {
+    background-image: url("img/Drop_Donald_Trump.png");
+    background-color: white;
+}
+
+#UlyssesGrant {
+        background-image: url("img/Drop_Ulysses_Grant.png");
+        background-color: white;
+	}
+
+#JamesMadison {
+    background-image: url("img/Drop_James_Madison.png");
+    background-color: white;
+}
+
+#GeorgeWashington {
+    background-image: url("img/Drop_George_Washington.png");
+    background-color: white;
+}
+
+#GeorgeWBush {
+    background-image: url("img/Drop_George_W_Bush.png");
+    background-color: white;
+}
+
+#JohnFKennedy {
+    background-image: url("img/Drop_John_F_Kennedy.png");
+    background-color: white;
+}
+
+#HerbertHoover {
+background-image: url("img/Drop_Herbert_Hoover.png");
+background-color: white;
+}
+
+#CalvinCoolidge {
+        background-image: url("img/Drop_Calvin_Coolidge.png");
+        background-color: white;
+}
+
+#BarackObama {
+background-image: url("img/Drag_Barack_Obama.png");
+background-color: white;
+}
+
+.instructions {
+text-align: center;
+}
+
+footer{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+    margin: 0;
+    padding: 0;
+    background-image:linear-gradient(to bottom, rgb(183, 187, 192),rgb(236, 238, 241), rgb(236, 238, 241),rgb(224, 227, 230), rgb(224, 227, 230), rgb(224, 227, 230), rgb(224, 227, 230),  rgb(236, 238, 241));
+    
+}
+.logob{
+    
+    padding: 0;
+    margin: 0;
+    width: auto;
+    height: 100px;
+}
+
+
+@media(max-width: 900px) {
+    .col-quarter {
+        width: 49%;
+    }
+    .column{
+        width: 49%;
+        display: inline;
+    }
+    
+    canvas{
+        display: none !important;
+    }
+    
+    #dropzone-container img {
+        width: 62px;
+        height: 62px;
+    }
+    
+    #logomenu{
+        padding: 0;
+        margin-left: 70px;
+        width: auto;
+        height: 100px;
+        align-self: center;
+    }
+    
+    #myNavbar ul li a {
+        padding-top: 40px;
+        font-size: 1.0em;
+        line-height: 2.5em;
+       
+    }
+    .icon {
+        width: 49%;
+    }
+    
+    .col-half.hitbox {
+        padding-top: 100%;
+        }
+        .margin {
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            font-size: 2.2em;
+            margin-top: -20px;
+        }
+        #instructions h1{
+            font-size: 2.3em;
+            margin-top: -20px;
+            
+        }
+        #instructions button{
+            display: none;
+        }
+    }  
+   
+
+@media(max-width: 600px) {
+    .col-quarter {
+        width: 49%;
+    }
+    .column{
+        width: 49%;
+        display: inline;
+    }
+    
+    canvas{
+        display: none !important;
+    }
+    
+    #dropzone-container img {
+        width: 62px;
+        height: 62px;
+    }
+    
+    #logomenu{
+        padding: 0;
+        margin-left: 70px;
+        width: auto;
+        height: 100px;
+        align-self: center;
+    }
+    
+    #myNavbar ul li a {
+        padding-top: 40px;
+        font-size: 1.0em;
+        line-height: 2.5em;
+       
+    }
+    .icon {
+        width: 49%;
+    }
+    
+    .col-half.hitbox {
+        padding-top: 100%;
+        }
+        .margin {
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            font-size: 2.2em;
+            margin-top: -20px;
+        }
+        #instructions h1{
+            font-size: 2.3em;
+            margin-top: -20px;
+            
+        }
+        #instructions button{
+            display: none;
+        }
+    }
+   

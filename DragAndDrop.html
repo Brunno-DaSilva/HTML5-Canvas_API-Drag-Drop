@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+    Class:   ITSE-1374.WW1: Mobile Web  
+    Project: Lab 3 HTML 5 APIs
+    Author:  Bruno Leandro da Silva
+    Date:    03/18/2018     
+
+    Disclosure: The Interact text was inspired by an article on https://www.html5canvastutorials.com/advanced/html5-canvas-interactive-text-particles/
+    The intention is to demonstrate the usage of API Drag&Drop functionality in a fun way, design and other aspect were overlooked.
+-->
+
+<head>
+  
+  <title>BrunoDaSilva WebDev</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/npg" href="img/BrunoWebDesign.png">
+  <link href="Style.css" type="text/css" rel="stylesheet" />  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+ 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+<!-- Navigation Menu -->
+<header>
+        <nav class="navbar navbar-default">
+               
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar" ><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+                    <a href="#instructions" class="navbar-left"><img id="logomenu" class="img-responsive" src="img/BrunoWebDesign.png" alt="BrunoDaSilva Web Developer"></a>                     
+                </div>
+
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-center">
+                      <li><a href="#instructions"> <span style="color:rgb(191, 10, 48 )">Drag And Drop</span> <span style="color:rgb(0, 40, 104)">Game</span>  <span style="color:rgb(191, 10, 48)">Presedential</span> <span style="color:rgb(0, 40, 104)">Series</span></a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+
+    
+<!-- Canvas Landing Page -->
+    <canvas id="canvas"></canvas>
+    
+    <script>
+    function Banner(){
+        
+      var keyword = "Drag & Drop";
+      var keyword1 = "Presidential";
+      var keyword2 = "Fun Facts !"
+        var canvas;
+        var context;
+        
+        var bgCanvas;
+        var bgContext;
+        
+        var denseness = 10;
+        
+        //Each particle/icon
+        var parts = [];
+        
+        var mouse = {x:-100,y:-100};
+        var mouseOnScreen = false;
+        
+        var itercount = 0;
+        var itertot = 40;
+        
+        this.initialize = function(canvas_id){
+            canvas = document.getElementById(canvas_id);
+            context = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            bgCanvas = document.createElement('canvas');
+            bgContext = bgCanvas.getContext('2d');
+            
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+        
+            canvas.addEventListener('mousemove', MouseMove, false);
+            canvas.addEventListener('mouseout', MouseOut, false);
+                
+            start();
+        }
+        
+        var start = function(){
+                
+            bgContext.fillStyle = "#000000";
+            bgContext.font = '300px impact';
+            bgContext.fillText(keyword, 70, 275);
+
+            bgContext.fillStyle = "#000000";
+            bgContext.font = '250px impact';
+            bgContext.fillText(keyword1, 70, 555);
+
+             bgContext.fillStyle = "#000000";
+            bgContext.font = '200px impact';
+            bgContext.fillText(keyword2, 380, 740);  
+            
+
+            clear();	
+            getCoords();
+        }
+        
+        var getCoords = function(){
+            var imageData, pixel, height, width;
+            
+            imageData = bgContext.getImageData(0, 0, canvas.width, canvas.height);
+            
+            // quickly iterate over all pixels - leaving density gaps
+            for(height = 0; height < bgCanvas.height; height += denseness){
+                for(width = 0; width < bgCanvas.width; width += denseness){   
+                   pixel = imageData.data[((width + (height * bgCanvas.width)) * 4) - 1];
+                      //Pixel is black from being drawn on. 
+                      if(pixel == 255) {
+                        drawCircle(width, height);
+                      }
+                }
+            }
+            
+            setInterval( update, 40 );
+        }
+        
+        var drawCircle = function(x, y){
+            
+            var startx = (Math.random() * canvas.width);
+            var starty = (Math.random() * canvas.height);
+            
+            var velx = (x - startx) / itertot;
+            var vely = (y - starty) / itertot;	
+            
+            parts.push(
+                {c: '#' + (Math.random() * 0x949494 + 0xaaaaaa | 0).toString(16),
+                 x: x, //goal position
+                 y: y,
+                 x2: startx, //start position
+                 y2: starty,
+                 r: true, //Released (to fly free!)
+                 v:{x:velx , y: vely}
+                }
+            )
+        }
+            
+        var update = function(){
+            var i, dx, dy, sqrDist, scale;
+            itercount++;
+            clear();
+            for (i = 0; i < parts.length; i++){
+                        
+                //If the dot has been released
+                if (parts[i].r == true){
+                    //Fly into infinity!!
+                    parts[i].x2 += parts[i].v.x;
+                    parts[i].y2 += parts[i].v.y;
+                //Perhaps I should check if they are out of screen... and kill them?
+                }
+                if (itercount == itertot){
+                    parts[i].v = {x:(Math.random() * 6) * 2 - 6 , y:(Math.random() * 6) * 2 - 6};
+                    parts[i].r = false;
+                }
+                
+        
+                //Look into using svg, so there is no mouse tracking.
+                //Find distance from mouse/draw!
+                dx = parts[i].x - mouse.x;
+                dy = parts[i].y - mouse.y;
+                sqrDist =  Math.sqrt(dx*dx + dy*dy);
+                
+                if (sqrDist < 200){
+                    parts[i].r = true;
+                } 			
+    
+                //Draw the circle
+                context.fillStyle = parts[i].c;
+                context.beginPath();
+                context.arc(parts[i].x2, parts[i].y2, 4 ,0 , Math.PI*2, true);
+                context.closePath();
+                context.fill();	
+                    
+            }	
+        }
+        
+        var MouseMove = function(e) {
+            if (e.layerX || e.layerY == 0) {
+                //Reset particle positions
+                mouseOnScreen = true;
+                
+                
+                mouse.x = e.layerX - canvas.offsetLeft;
+                mouse.y = e.layerY - canvas.offsetTop;
+            }
+        }
+        
+        var MouseOut = function(e) {
+            mouseOnScreen = false;
+            mouse.x = -100;
+            mouse.y = -100;	
+        }
+        
+        //Clear the on screen canvas
+        var clear = function(){
+            context.fillStyle = 'rgb(0, 40, 104)';
+            context.beginPath();
+              context.rect(0, 0, canvas.width, canvas.height);
+             context.closePath();
+             context.fill();
+        }
+    }
+    
+    var banner = new Banner();
+    banner.initialize("canvas");
+    
+   
+      </script>   
+     
+  </header>
+
+<!-- First Container -->
+<div id="instructions" class="container-fluid bg-1 text-center">    
+ <h1>Instructions</h1>
+ <div class="container">
+
+ <p>This is a presidential <b>Fun Facts Drag and Drop Game</b>. The game overview consist in match the presents on the right with their respective fan facts on the left!</p>
+ 
+ <p>The score will be calculated based on how many matchs you got right. You will drop the image into the correct place
+based on what you think the correct answer is. Simply, read the fun fact on the left, drag the correspondent president image on the right 
+and drop it on top of the correct fun fact.</p>
+<p>The layout is very flexible, you can drag the images back and forth, all images can be rearranged at any time. Finally, if you are not sure what present is displaying on the picture just hover the mouse on top,
+it will display his name. Before begin click on the <b> Quick Guide button</b> for a visual tour</p>
+    
+    </div>
+  <br>
+  
+  <button type="button" class="btn btn-info" data-toggle="modal" data-target=".bd-example-modal-lg">Quick Guide</button>
+  <br>
+  <br>
+  <p>Are you ready? Let's Play!</p>
+  <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+     <div class="modal-dialog modal-lg">
+
+        <div class="gameInstructions">
+            <div class="row">
+                 <div class="col-lg-4">
+                    <p>Score will be calculated based on how many icons you got right!</p>
+                    <img src="img/Score_Caulculation_Sample.png" class="img-responsive margin" style="width:100%" alt="Image">
+            </div>
+
+            <div class="col-lg-4"> 
+                    <p>Drop the icons into the correct place.</p>
+                    <img src="img/DragDrop_Instructions.png" class="img-responsive margin" style="width:100%" alt="Image">
+            </div>
+
+            <div class="col-lg-4"> 
+                    <p>You may drag them back if you need to rearrange.</p>
+                    <img src="img/Rearrange.png" class="img-responsive margin" style="width:100%" alt="Image">
+            </div>
+
+        </div>
+
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+<!-- Second Container -->
+
+  <div class="container-fluid bg-2 text-center">    
+        <h2 class="margin">Your score is <span id="score" style="color:rgb(191, 10, 48)">0</span> out of <b>10</b>.</h2>
+        <div class="row">
+                <div id="dropzone-holder" class="col-half">
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image"/>
+                        <div id="AbrahamLincoln" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image" />
+                        <div id="DonaldTrump" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image" />
+                        <div id="UlyssesGrant" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image" />
+                        <div id="JamesMadison" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image" />
+                        <div id="GeorgeWashington" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image" />
+                        <div id="GeorgeWBush" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image" />
+                        <div id="JohnFKennedy" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image" />
+                        <div id="HerbertHoover" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image" />
+                        <div id="CalvinCoolidge" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>
+                    <div class="col-quarter hitbox">
+                        <img class="answer hide" src="img/correct-green.png" alt="Image" />
+                        <div id="BarackObama" class="dropzone" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">				
+                        </div>
+                    </div>                    
+                </div>
+
+                
+                <div class="col-half hitbox" >
+                    <div id="dropzone-container" class="dropzone container" ondragenter="return enter(event)" ondragover="return over(event)" ondrop="return drop(event)">
+                       
+                        <div class="column">
+                               
+                         <img  title="Abraham Lincoln" id="icon-AbrahamLincoln" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_Abraham_Lincoln.jpg" alt="Abraham Lincoln"/>
+                          
+                         
+                        
+                        <img title="Donald Trump" id="icon-DonaldTrump" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_Donald_Trump.png" alt="Donald_Trump" />
+                        
+                        
+                        <img title="Ulysses Grant" id="icon-UlyssesGrant" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_Ulysses_Grant.jpg" alt="Ulysses_Grant"/>
+                       
+                        
+                        <img title="James Madison" id="icon-JamesMadison" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_James_Madison.jpg" alt="James_Madison"/>
+                      
+                        
+                        <img title="George Washington" id="icon-GeorgeWashington" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_George_Washington.jpg" alt="George_Washington"/>
+                      
+                        
+                        <img  title="George W Bush" id="icon-GeorgeWBush" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_George_W_Bush.png" alt="George_W_Bush"/>
+                        
+                        
+                        <img title="John F Kennedy" id="icon-JohnFKennedy" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_John_F_Kennedy.jpg" alt="John_F_Kennedy"/>
+                        
+                        
+                        <img title="Herbert Hoover" id="icon-HerbertHoover" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_Herbert_Hoover.jpg" alt="Herbert_Hoover"/>
+                        
+                        
+                        <img title="Calvin Coolidge" id="icon-CalvinCoolidge" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_Calvin_Coolidge.jpg" alt="Calvin_Coolidge"/>
+                        
+                        
+                        <img title="Barack Obama" id="icon-BarackObama" class="icon" draggable="true" ondragstart="return start(event)" ondragend="return end(event)" src="img/Drag_Barack_Obama.jpg" alt="Barack_Obama"/>      
+                    </div>             
+                
+                
+            </div>
+        </div>    
+</div>
+</div>
+
+<!-- Game - JavaScript Code-->
+<script>
+    
+    var start = function(e) {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('iconId', e.target.id);
+        e.dataTransfer.setDragImage(e.target, 0, 0);
+        return true;
+    }
+
+    var enter = function(e) {
+        return true;
+    }
+
+    var over = function(e) {
+        var iconId = e.dataTransfer.getData('iconId');
+        var targetId = e.target.id;
+
+        if (targetId.indexOf('icon') > -1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    var drop = function(e) {
+        var iconId = e.dataTransfer.getData('iconId');
+        var icon = document.getElementById(iconId);
+        e.target.appendChild(icon);
+        e.stopPropagation();
+        return false;
+    }
+
+    var end = function(e) {
+        e.dataTransfer.clearData('iconId');
+        return true;
+    }
+
+    var pollResults = function() {
+        var score = document.getElementById('score');
+        score.innerHTML = 0;
+
+        var hitboxes = document.getElementById('dropzone-holder').children;
+
+        for (var i = 0; i < hitboxes.length; ++i) {
+            var hitbox = hitboxes[i];
+            var dropzone = hitbox.lastElementChild;
+
+            if (dropzone.children.length > 0) {
+                dropzone.style.backgroundSize = '0';
+
+                var dropzoneId = dropzone.id;
+                var iconId = dropzone.firstElementChild.id;
+
+                var dropzoneName = dropzoneId.substring(dropzoneId.indexOf('-') + 1);
+                var iconName = iconId.substring(iconId.indexOf('-') + 1);
+
+                dropzone.previousElementSibling.setAttribute('class', 'answer show');
+
+                if (iconName == dropzoneName) {
+                    dropzone.previousElementSibling.src = 'img/correct-green.png';
+                    score.innerHTML = parseInt(score.innerHTML) + 1;
+                } else {
+                    dropzone.previousElementSibling.src = 'img/wrong-red.png';
+                }
+            } else {
+                dropzone.previousElementSibling.setAttribute('class', 'answer hide');
+                dropzone.style.backgroundSize = '100% auto';
+            }
+        }
+
+        if (parseInt(score.innerHTML) == 10) {
+            alert('Congratulations! You won the game!\nClick OK to restart.');
+            location.reload();
+        }
+    }
+
+    setInterval(pollResults, 50);
+
+    var shuffleIcons = function() {
+        var dropzoneContainer = document.getElementById('dropzone-container');
+        var icons = dropzoneContainer.children;
+        var fragment = document.createDocumentFragment();
+        while (icons.length) {
+            fragment.appendChild(icons[Math.floor(Math.random() * icons.length)]);
+        }
+        dropzoneContainer.appendChild(fragment);
+    }
+
+    var shuffleDropzones = function() {
+        var dropzoneHolder = document.getElementById('dropzone-holder');
+        var dropzones = dropzoneHolder.children;
+        var fragment = document.createDocumentFragment();
+        while (dropzones.length) {
+            fragment.appendChild(dropzones[Math.floor(Math.random() * dropzones.length)]);
+        }
+        dropzoneHolder.appendChild(fragment);
+    }
+
+    window.onload = function() {
+        shuffleIcons();
+        shuffleDropzones();
+    }
+</script>
+
+
+<!-- Footer -->
+<footer class="container-fluid bg-4 text-center">
+   <div> 
+    <img class="logob" src="img/BrunoWebDesign.png" alt="BrunoDaSilva WebDeveloper"/>   
+  <p><span id="score1" style="color:rgb(191, 10, 48 )"><b>BrunoDaSilva </b> </span><span style="color:rgb(0, 40, 104)"><b>WebDeveloper</b></span></p> 
+  <p><span id="score2" style="color:rgb(191, 10, 48 )">Phone: (469)307-2016 </span> <span style="color:rgb(0, 40, 104)"> | Email: bleandrodasilva@yahoo.com </span></p> 
+</div>
+</footer>
+
+</body>
+</html>
